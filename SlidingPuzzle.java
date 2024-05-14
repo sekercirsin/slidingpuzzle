@@ -1,21 +1,37 @@
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 public class SlidingPuzzle extends JFrame {
     private JPanel puzzlePanel;
-    private JButton[][] buttons;
+    private TileButton[][] buttons;
     private int[][] puzzleBoard;
     private int size;
     private boolean isShufling = false;
+    private boolean isImagePuzzle;
+    private MainFrame mainFrame;
 
-    public SlidingPuzzle(int size) {
+
+    public SlidingPuzzle(int size, boolean isImagePuzzle,MainFrame mainFrame) {
+        TileButton.setIsImage(isImagePuzzle);
+        initClip();
+        this.mainFrame = mainFrame;
+        this.isImagePuzzle = isImagePuzzle;
         this.size = size;
         puzzleBoard = new int[size][size];
         initializePuzzle();
         setupUI();
         shufflePuzzle();
+
     }
 
     private void initializePuzzle() {
@@ -29,18 +45,20 @@ public class SlidingPuzzle extends JFrame {
         puzzleBoard[size - 1][size - 1] = 0;
     }
 
+
+
     private void setupUI() {
         puzzlePanel = new JPanel(new GridLayout(size, size));
-        buttons = new JButton[size][size];
+        buttons = new TileButton[size][size];
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if(puzzleBoard[i][j] == 0){
-                    buttons[i][j] = new JButton("0");
+                    buttons[i][j] = new TileButton(0);
                     buttons[i][j].setBackground(Color.BLACK);
                 }
                 else{
-                    buttons[i][j] = new JButton(String.valueOf(puzzleBoard[i][j]));
+                    buttons[i][j] = new TileButton(puzzleBoard[i][j]);
                     buttons[i][j].setBackground(Color.white);
                 }
 
@@ -51,8 +69,43 @@ public class SlidingPuzzle extends JFrame {
 
         add(puzzlePanel);
         setTitle("Sliding Puzzle");
-        setSize(400, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(840, 840);
+        this.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainFrame.setVisible(true);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
 
     }
 
@@ -69,11 +122,16 @@ public class SlidingPuzzle extends JFrame {
 
     public void moveTile(int row, int col) {
         if (isValidMove(row, col)) {
+
+                
             int emptyRow = getEmptyTileRow();
             int emptyCol = getEmptyTileCol();
 
             puzzleBoard[emptyRow][emptyCol] = puzzleBoard[row][col];
             puzzleBoard[row][col] = 0;
+
+
+
 
             updateButtons();
             if (isSolved()) {
@@ -118,7 +176,13 @@ public class SlidingPuzzle extends JFrame {
                 if(puzzleBoard[i][j] == 0){
                     buttons[i][j].setText("");
                     buttons[i][j].setBackground(Color.black);
+                    if(isImagePuzzle){
+                        buttons[i][j].setIcon(new ImageIcon());
+                    }
                     continue;
+                }
+                if(isImagePuzzle){
+                    buttons[i][j].setIcon(new ImageIcon(puzzleBoard[i][j] + ".jpg"));
                 }
                 buttons[i][j].setText(String.valueOf(puzzleBoard[i][j]));
                 buttons[i][j].setBackground(Color.WHITE);
