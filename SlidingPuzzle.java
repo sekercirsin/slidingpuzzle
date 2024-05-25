@@ -2,6 +2,7 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ public class SlidingPuzzle extends JFrame {
     private boolean isShufling = false;
     private boolean isImagePuzzle;
     private MainFrame mainFrame;
-
+    private Clip clip;
 
     public SlidingPuzzle(int size, boolean isImagePuzzle,MainFrame mainFrame) {
         TileButton.setIsImage(isImagePuzzle);
@@ -32,6 +33,28 @@ public class SlidingPuzzle extends JFrame {
         setupUI();
         shufflePuzzle();
 
+    }
+
+    private void initClip(){
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("move.wav"))) {
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+
+    public void playMoveClip(){
+        if(clip.isRunning())
+        clip.stop();
+
+        clip.setFramePosition(0);
+        clip.start();
     }
 
     private void initializePuzzle() {

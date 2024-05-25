@@ -15,6 +15,7 @@ public class ButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        puzzle.playMoveClip();
         puzzle.moveTile(row, col);
     }
 }
