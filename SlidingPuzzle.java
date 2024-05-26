@@ -92,7 +92,8 @@ public class SlidingPuzzle extends JFrame {
 
         add(puzzlePanel);
         setTitle("Sliding Puzzle");
-        setSize(840, 840);
+       // setSize(840, 840);
+       pack();
         this.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {

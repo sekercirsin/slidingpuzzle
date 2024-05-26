@@ -64,6 +64,8 @@ public class MainFrame extends JFrame {
         imageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String fileName = JOptionPane.showInputDialog("Choose image");
+                ImageProcessor.divideImage(fileName);
                 SlidingPuzzle imageGame = new SlidingPuzzle(3,true,frame);
                 imageGame.setVisible(true);
                 frame.setVisible(false);

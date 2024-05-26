@@ -12,7 +12,8 @@ public class TileButton extends JButton {
             return;
         }
         if(isImage){
-            setIcon(new ImageIcon(tileNum + ".jpg"));
+            ImageIcon icon = new ImageIcon(tileNum + ".jpg");
+            setIcon(icon);
         }
         else{
 
